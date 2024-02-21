@@ -45,45 +45,12 @@ const defaultData: Person[] = [
   },
 ];
 
-const columnHelper = createColumnHelper<Person>();
-
-// const columns = [
-//   columnHelper.accessor("firstName", {
-//     cell: (info) => info.getValue(),
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor((row) => row.lastName, {
-//     id: "lastName",
-//     cell: (info) => <i>{info.getValue()}</i>,
-//     header: () => <span>Last Name</span>,
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor("age", {
-//     header: () => "Age",
-//     cell: (info) => info.renderValue(),
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor("visits", {
-//     header: () => <span>Visits</span>,
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor("status", {
-//     header: "Status",
-//     footer: (info) => info.column.id,
-//   }),
-//   columnHelper.accessor("progress", {
-//     header: "Profile Progress",
-//     footer: (info) => info.column.id,
-//   }),
-// ];
-// 위에 코드가 밑처럼 수정됨
-
 const columns: ColumnDef<Person>[] = [
   {
     accessorKey: "firstName",
     id: "FIRSTNAME",
     header: "First Name",
-    //  cell, footer, columns etc
+    //  cell, footer, columns
   },
   {
     accessorKey: "age",
@@ -106,6 +73,7 @@ const columns: ColumnDef<Person>[] = [
     header: "progress",
   },
 ];
+
 const TableBasic = () => {
   const [data, setData] = useState(() => [...defaultData]);
   const rerender = useReducer(() => ({}), {})[1];
