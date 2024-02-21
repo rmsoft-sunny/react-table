@@ -2,6 +2,7 @@
 import React, { useReducer, useState } from "react";
 
 import {
+  ColumnDef,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
@@ -47,36 +48,53 @@ const defaultData: Person[] = [
 const columnHelper = createColumnHelper<Person>();
 
 const columns = [
-  columnHelper.accessor("firstName", {
-    cell: (info) => info.getValue(),
-    footer: (info) => info.column.id,
+  columnHelper.group({
+    id: "hello",
+    header: () => <span>Hello</span>,
+    // footer: props => props.column.id,
+    columns: [
+      columnHelper.accessor("firstName", {
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id,
+      }),
+      columnHelper.accessor((row) => row.lastName, {
+        id: "lastName",
+        cell: (info) => info.getValue(),
+        header: () => <span>Last Name</span>,
+        footer: (props) => props.column.id,
+      }),
+    ],
   }),
-  columnHelper.accessor((row) => row.lastName, {
-    id: "lastName",
-    cell: (info) => <i>{info.getValue()}</i>,
-    header: () => <span>Last Name</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("age", {
-    header: () => "Age",
-    cell: (info) => info.renderValue(),
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("visits", {
-    header: () => <span>Visits</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("progress", {
-    header: "Profile Progress",
-    footer: (info) => info.column.id,
+  columnHelper.group({
+    header: "Info",
+    footer: (props) => props.column.id,
+    columns: [
+      columnHelper.accessor("age", {
+        header: () => "Age",
+        footer: (props) => props.column.id,
+      }),
+      columnHelper.group({
+        header: "More Info",
+        columns: [
+          columnHelper.accessor("visits", {
+            header: () => <span>Visits</span>,
+            footer: (props) => props.column.id,
+          }),
+          columnHelper.accessor("status", {
+            header: "Status",
+            footer: (props) => props.column.id,
+          }),
+          columnHelper.accessor("progress", {
+            header: "Profile Progress",
+            footer: (props) => props.column.id,
+          }),
+        ],
+      }),
+    ],
   }),
 ];
 
-const TablePage = () => {
+const ColumnGroups = () => {
   const [data, setData] = useState(() => [...defaultData]);
   const rerender = useReducer(() => ({}), {})[1];
 
@@ -87,12 +105,16 @@ const TablePage = () => {
   });
   return (
     <div className="p-2">
-      <table>
+      <table className="border border-gray-100">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <th
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  className="border-b-2 border-r-2 border-gray-100 px-2"
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -104,7 +126,7 @@ const TablePage = () => {
             </tr>
           ))}
         </thead>
-        <tbody>
+        <tbody className="border-b-2 border-gray-100">
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
@@ -119,7 +141,7 @@ const TablePage = () => {
           {table.getFooterGroups().map((footerGroup) => (
             <tr key={footerGroup.id}>
               {footerGroup.headers.map((header) => (
-                <th key={header.id}>
+                <th key={header.id} colSpan={header.colSpan}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -140,4 +162,4 @@ const TablePage = () => {
   );
 };
 
-export default TablePage;
+export default ColumnGroups;
