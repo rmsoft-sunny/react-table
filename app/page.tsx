@@ -2,9 +2,17 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex gap-4 bg-slate-50">
-      <Link href={"/basic"}>기본 테이블</Link>
-      <Link href={"/column-groups"}>컬럼 그룹</Link>
+    <div
+      className="flex gap-4 bg-slate-50"
+      style={{
+        backgroundColor: "beige",
+        height: "100vh",
+      }}
+    >
+      <p>React Example</p>
+      <Link href={"/basic"}>Basic</Link>
+      <Link href={"/column-groups"}>Column Groups</Link>
+      <Link href={"/column-ordering"}>Column Ordering</Link>
     </div>
   );
 }
