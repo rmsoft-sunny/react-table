@@ -50,7 +50,12 @@ const columns: ColumnDef<Person>[] = [
     accessorKey: "firstName",
     id: "FIRSTNAME",
     header: "First Name",
-    //  cell, footer, columns
+    cell: (cellProps) => {
+      <span>{cellProps.row.original.firstName}</span>;
+    },
+    footer: (footerProps) => (
+      <span>{footerProps.header.headerGroup.headers[0].id}</span>
+    ),
   },
   {
     accessorKey: "age",
