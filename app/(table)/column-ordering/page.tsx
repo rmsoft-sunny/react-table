@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { faker } from "@faker-js/faker";
 import {
@@ -125,10 +127,10 @@ const ColumnOrdering = () => {
       <div className="h-4" />
       <div className="flex flex-wrap gap-2">
         <button onClick={() => rerender()} className="border p-1">
-          Regenerate
+          갱신
         </button>
         <button onClick={() => randomizeColumns()} className="border p-1">
-          Shuffle Columns
+          뒤섞기
         </button>
       </div>
       <div className="h-4" />
