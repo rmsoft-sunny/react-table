@@ -28,6 +28,7 @@ function Filter({
         placeholder={`Min`}
         className="w-24 border shadow rounded"
       />
+
       <input
         type="number"
         value={(columnFilterValue as [number, number])?.[1] ?? ""}

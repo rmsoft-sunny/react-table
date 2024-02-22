@@ -1,5 +1,12 @@
 "use client";
-import React, { useCallback, useEffect, useReducer, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 
 import {
   Column,
@@ -24,19 +31,21 @@ declare module "@tanstack/react-table" {
 const defaultColumn: Partial<ColumnDef<Person>> = {
   cell: ({ getValue, row: { index }, column: { id }, table }) => {
     const initialValue = getValue();
-    // We need to keep and update the state of the cell normally
-    const [value, setValue] = React.useState(initialValue);
 
-    // When the input is blurred, we'll call our table meta's updateData function
+    // 셀의 상태를 정상적으로 유지하고 업데이트하기
+    const [value, setValue] = useState(initialValue);
+
+    // updateData 함수를 호출
     const onBlur = () => {
       table.options.meta?.updateData(index, id, value);
     };
 
-    // If the initialValue is changed external, sync it up with our state
-    React.useEffect(() => {
+    // InitialValue가 외부에서 변경된 경우 지금 상태와 동기화
+    useEffect(() => {
       setValue(initialValue);
     }, [initialValue]);
 
+    // 테이블의 값을 input으로 변경하고 싶을 때 사용 -> 데이터를 뿌려만 주고 싶을때는 input으로 사용만 안하면 될듯!
     return (
       <input
         value={value as string}
@@ -51,7 +60,7 @@ const useSkipper = () => {
   const shouldSkipRef = useRef(true);
   const shouldSkip = shouldSkipRef.current;
 
-  // Wrap a function with this to skip a pagination reset temporarily
+  // 페이지 재설정을 건너뛰기
   const skip = useCallback(() => {
     shouldSkipRef.current = false;
   }, []);
@@ -66,7 +75,7 @@ const useSkipper = () => {
 const EditableData = () => {
   const rerender = useReducer(() => ({}), {})[1];
 
-  const columns = React.useMemo<ColumnDef<Person>[]>(
+  const columns = useMemo<ColumnDef<Person>[]>(
     () => [
       {
         header: "Name",
@@ -93,32 +102,32 @@ const EditableData = () => {
             header: () => "Age",
             footer: (props) => props.column.id,
           },
-          {
-            header: "More Info",
-            columns: [
-              {
-                accessorKey: "visits",
-                header: () => <span>Visits</span>,
-                footer: (props) => props.column.id,
-              },
-              {
-                accessorKey: "status",
-                header: "Status",
-                footer: (props) => props.column.id,
-              },
-              {
-                accessorKey: "progress",
-                header: "Profile Progress",
-                footer: (props) => props.column.id,
-              },
-            ],
-          },
+          //   {
+          //     header: "More Info",
+          //     columns: [
+          //       {
+          //         accessorKey: "visits",
+          //         header: () => <span>Visits</span>,
+          //         footer: (props) => props.column.id,
+          //       },
+          //       {
+          //         accessorKey: "status",
+          //         header: "Status",
+          //         footer: (props) => props.column.id,
+          //       },
+          //       {
+          //         accessorKey: "progress",
+          //         header: "Profile Progress",
+          //         footer: (props) => props.column.id,
+          //       },
+          //     ],
+          //   },
         ],
       },
     ],
     []
   );
-  const [data, setData] = React.useState(() => makeData(1000));
+  const [data, setData] = useState(() => makeData(1000));
   const refreshData = () => setData(() => makeData(1000));
 
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
@@ -131,10 +140,10 @@ const EditableData = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex,
-    // Provide our updateData function to our table meta
+    // updateData 기능을 우리의 테이블 메타에 제공
     meta: {
       updateData: (rowIndex, columnId, value) => {
-        // Skip page index reset until after next rerender
+        // 다음 리렌더 이후까지 페이지 인덱스 재설정 건너뛰기
         skipAutoResetPageIndex();
         setData((old) =>
           old.map((row, index) => {
@@ -168,11 +177,11 @@ const EditableData = () => {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {header.column.getCanFilter() ? (
+                        {/* {header.column.getCanFilter() ? (
                           <div>
                             <Filter column={header.column} table={table} />
                           </div>
-                        ) : null}
+                        ) : null} */}
                       </div>
                     )}
                   </th>
@@ -201,6 +210,7 @@ const EditableData = () => {
         </tbody>
       </table>
       <div className="h-2" />
+      {/* 페이지 넘기는 부분 */}
       <div className="flex items-center gap-2">
         <button
           className="border rounded p-1"
@@ -230,6 +240,7 @@ const EditableData = () => {
         >
           {">>"}
         </button>
+        {/* 가고 싶은 페이지를 input에 입력해 이동하는 부분 */}
         <span className="flex items-center gap-1">
           <div>Page</div>
           <strong>
@@ -249,6 +260,7 @@ const EditableData = () => {
             className="border p-1 rounded w-16"
           />
         </span>
+        {/* 페이지 사이즈 설정 */}
         <select
           value={table.getState().pagination.pageSize}
           onChange={(e) => {
@@ -263,12 +275,6 @@ const EditableData = () => {
         </select>
       </div>
       <div>{table.getRowModel().rows.length} Rows</div>
-      <div>
-        <button onClick={() => rerender()}>Force Rerender</button>
-      </div>
-      <div>
-        <button onClick={() => refreshData()}>Refresh Data</button>
-      </div>
     </div>
   );
 };
