@@ -20,7 +20,7 @@ import {
 
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { fetchData, Person, PersonApiResponse } from "./make-data";
-import { useVirtualizer } from "@tanstack/react-virtual";
+import { useVirtualizer } from "@tanstack/react-virtual"; //스크롤에 따른 동적로딩
 
 const fetchSize = 50;
 
