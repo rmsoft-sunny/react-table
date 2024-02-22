@@ -21,7 +21,16 @@ import {
   getFilteredRowModel,
   getExpandedRowModel,
   flexRender,
+  getSortedRowModel,
 } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 const ShadTable = () => {
   const [data, setData] = useState(() => makeData(100));
@@ -39,14 +48,15 @@ const ShadTable = () => {
               <>
                 <IndeterminateCheckbox
                   {...{
-                    checked: table.getIsAllRowsSelected(), //현재 모든 행이 선택되었는지 여부를 판별, 헤더 부분에 위치한 "전체 선택" 체크박스의 상태를 결정하는 데 사용
-                    indeterminate: table.getIsSomeRowsSelected(), //일부만 선택된 상태여부 판별
-                    onChange: table.getToggleAllRowsSelectedHandler(), //모든 행의 확장 또는 축소 상태를 전환
+                    checked: table.getIsAllRowsSelected(),
+                    indeterminate: table.getIsSomeRowsSelected(),
+                    onChange: table.getToggleAllRowsSelectedHandler(),
                   }}
                 />{" "}
                 <button
                   onClick={() => {
-                    table.getToggleAllRowsExpandedHandler(); //해당 테이블의 모든 행이 확장되어 있는지 여부를 나타내는 속성
+                    table.getToggleAllRowsExpandedHandler();
+                    console.log("row:", table);
                   }}
                 >
                   {table.getIsAllRowsExpanded() ? "👇" : "👉"}
@@ -138,8 +148,8 @@ const ShadTable = () => {
       expanded,
     },
     onExpandedChange: setExpanded,
-    getSubRows: (row) => row.subRows,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
@@ -164,11 +174,47 @@ const ShadTable = () => {
               return (
                 <th key={header.id} colSpan={header.colSpan}>
                   {header.isPlaceholder ? null : (
-                    <TableHead>
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                    <TableHead
+                      style={{
+                        cursor: header.column.getCanSort() ? "pointer" : "auto",
+                        userSelect: "none",
+                      }}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline">
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          style={{
+                            backgroundColor: "white",
+                            paddingLeft: "40px",
+                            paddingRight: "40px",
+                          }}
+                        >
+                          <DropdownMenuItem
+                            onClick={() => header.column.getIsSorted()}
+                          >
+                            🔼
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => header.column.getIsSorted()}
+                          >
+                            🔽
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          {/* <DropdownMenuItem
+                            onClick={() => header.column.clearSorting()}
+                          >
+                            Clear
+                          </DropdownMenuItem> */}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableHead>
                   )}
                 </th>

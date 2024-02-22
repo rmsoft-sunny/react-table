@@ -26,7 +26,7 @@ export const renderSortableHeader = (
   title: string,
   className?: string
 ) => {
-  const sortState = props.column.getIsSorted();
+  const sortState = props.column?.getIsSorted();
 
   return (
     <div
@@ -49,17 +49,27 @@ export const renderSortableHeader = (
             </div>
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="bg-white">
+        <DropdownMenuContent
+          align="start"
+          style={{
+            backgroundColor: "white",
+            padding: "14px",
+          }}
+        >
           <DropdownMenuItem
             className="flex items-center text-sm"
-            onClick={() => props.column.toggleSorting(false)}
+            onClick={() => {
+              console.log(">>", props);
+
+              props.column?.toggleSorting(false);
+            }}
           >
             <ChevronUp className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             오름차순
           </DropdownMenuItem>
           <DropdownMenuItem
             className="flex items-center text-sm"
-            onClick={() => props.column.toggleSorting(true)}
+            onClick={() => props.column?.toggleSorting(true)}
           >
             <ChevronDown className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             내림차순
