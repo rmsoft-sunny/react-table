@@ -1,5 +1,11 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   ColumnDef,
@@ -23,7 +29,7 @@ const InfiniteScrolling = () => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns = React.useMemo<ColumnDef<Person>[]>(
+  const columns = useMemo<ColumnDef<Person>[]>(
     () => [
       {
         accessorKey: "id",
@@ -71,13 +77,10 @@ const InfiniteScrolling = () => {
 
   const { data, fetchNextPage, isFetching, isLoading } =
     useInfiniteQuery<PersonApiResponse>({
-      queryKey: [
-        "people",
-        sorting, //refetch when sorting changes
-      ],
+      queryKey: ["Infinite-Scrolling", sorting],
       queryFn: async ({ pageParam = 0 }) => {
         const start = (pageParam as number) * fetchSize;
-        const fetchedData = await fetchData(start, fetchSize, sorting); //pretend api call
+        const fetchedData = await fetchData(start, fetchSize, sorting); //API 호출
         return fetchedData;
       },
       initialPageParam: 0,
@@ -86,20 +89,19 @@ const InfiniteScrolling = () => {
       placeholderData: keepPreviousData,
     });
 
-  //flatten the array of arrays from the useInfiniteQuery hook
-  const flatData = React.useMemo(
+  const flatData = useMemo(
     () => data?.pages?.flatMap((page) => page.data) ?? [],
     [data]
-  );
-  const totalDBRowCount = data?.pages?.[0]?.meta?.totalRowCount ?? 0;
-  const totalFetched = flatData.length;
+  ); //조회되는 데이터
+  const totalDBRowCount = data?.pages?.[0]?.meta?.totalRowCount ?? 0; // 전체 데이터의 갯수
+  const totalFetched = flatData.length; //조회되는 데이터의 갯수
 
-  //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
-  const fetchMoreOnBottomReached = React.useCallback(
+  //스크롤하고 테이블 맨 아래에 닿으면 더 많은 데이터를 가져오기 위해 스크롤 및 마운트에서 호출
+  const fetchMoreOnBottomReached = useCallback(
     (containerRefElement?: HTMLDivElement | null) => {
       if (containerRefElement) {
         const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-        //once the user has scrolled within 500px of the bottom of the table, fetch more data if we can
+        //테이블 하단의 500 px 내에서 스크롤하면 불러오기
         if (
           scrollHeight - scrollTop - clientHeight < 500 &&
           !isFetching &&
@@ -112,8 +114,8 @@ const InfiniteScrolling = () => {
     [fetchNextPage, isFetching, totalFetched, totalDBRowCount]
   );
 
-  //a check on mount and after a fetch to see if the table is already scrolled to the bottom and immediately needs to fetch more data
-  React.useEffect(() => {
+  //즉시 더 많은 데이터를 가져올 필요가 있는지 확인
+  useEffect(() => {
     fetchMoreOnBottomReached(tableContainerRef.current);
   }, [fetchMoreOnBottomReached]);
 
@@ -129,7 +131,7 @@ const InfiniteScrolling = () => {
     debugTable: true,
   });
 
-  //scroll to top of table when sorting changes
+  //변경사항을 정렬할 때 테이블 맨 위로 스크롤
   const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
     setSorting(updater);
     if (!!table.getRowModel().rows.length) {
@@ -137,25 +139,24 @@ const InfiniteScrolling = () => {
     }
   };
 
-  //since this table option is derived from table row model state, we're using the table.setOptions utility
   table.setOptions((prev) => ({
     ...prev,
-    onSortingChange: handleSortingChange,
+    onSortingChange: handleSortingChange, //테이블의 옵션을 업데이트하는 데 사용
   }));
 
   const { rows } = table.getRowModel();
 
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
-    estimateSize: () => 33, //estimate row height for accurate scrollbar dragging
+    estimateSize: () => 33, //정확한 스크롤 바 드래그를 위한 행 높이
     getScrollElement: () => tableContainerRef.current,
-    //measure dynamic row height, except in firefox because it measures table border height incorrectly
+    //동적 행 높이를 측정(파이어폭스를 제외)
     measureElement:
       typeof window !== "undefined" &&
       navigator.userAgent.indexOf("Firefox") === -1
         ? (element) => element?.getBoundingClientRect().height
         : undefined,
-    overscan: 5,
+    overscan: 5, //리스트의 상단과 하단에 몇 개의 아이템을 추가로 렌더링할지
   });
 
   if (isLoading) {
@@ -170,12 +171,11 @@ const InfiniteScrolling = () => {
         onScroll={(e) => fetchMoreOnBottomReached(e.target as HTMLDivElement)}
         ref={tableContainerRef}
         style={{
-          overflow: "auto", //our scrollable table container
-          position: "relative", //needed for sticky header
-          height: "600px", //should be a fixed height
+          overflow: "auto",
+          position: "relative",
+          height: "600px",
         }}
       >
-        {/* Even though we're still using sematic table tags, we must use CSS grid and flexbox for dynamic row heights */}
         <table style={{ display: "grid" }}>
           <thead
             style={{
