@@ -1,103 +1,23 @@
 "use client";
-import React, {
-  HTMLProps,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import React, { useMemo, useState } from "react";
 
 import {
   Column,
   Table,
-  ColumnDef,
+  ExpandedState,
   useReactTable,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
-  flexRender,
-  RowData,
-  ExpandedState,
+  getFilteredRowModel,
   getExpandedRowModel,
+  ColumnDef,
+  flexRender,
 } from "@tanstack/react-table";
+
 import { makeData, Person } from "./makeData";
+import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
 
-declare module "@tanstack/react-table" {
-  interface TableMeta<TData extends RowData> {
-    updateData: (rowIndex: number, columnId: string, value: unknown) => void;
-  }
-}
-
-const defaultColumn: Partial<ColumnDef<Person>> = {
-  cell: ({ getValue, row: { index }, column: { id }, table }) => {
-    const initialValue = getValue();
-
-    // 셀의 상태를 정상적으로 유지하고 업데이트하기
-    const [value, setValue] = useState(initialValue);
-
-    // updateData 함수를 호출
-    const onBlur = () => {
-      table.options.meta?.updateData(index, id, value);
-    };
-
-    // InitialValue가 외부에서 변경된 경우 지금 상태와 동기화
-    useEffect(() => {
-      setValue(initialValue);
-    }, [initialValue]);
-
-    // 테이블의 값을 input으로 변경하고 싶을 때 사용 -> 데이터를 뿌려만 주고 싶을때는 input으로 사용만 안하면 될듯!
-    return (
-      <input
-        value={value as string}
-        onChange={(e) => setValue(e.target.value)}
-        onBlur={onBlur}
-      />
-    );
-  },
-};
-
-const useSkipper = () => {
-  const shouldSkipRef = useRef(true);
-  const shouldSkip = shouldSkipRef.current;
-
-  // 페이지 재설정을 건너뛰기
-  const skip = useCallback(() => {
-    shouldSkipRef.current = false;
-  }, []);
-
-  useEffect(() => {
-    shouldSkipRef.current = true;
-  });
-
-  return [shouldSkip, skip] as const;
-};
-
-// 체크박스 선택
-const IndeterminateCheckbox = ({
-  indeterminate,
-  className = "",
-  ...rest
-}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) => {
-  const ref = useRef<HTMLInputElement>(null!);
-
-  useEffect(() => {
-    if (typeof indeterminate === "boolean") {
-      ref.current.indeterminate = !rest.checked && indeterminate;
-    }
-  }, [ref, indeterminate]);
-
-  return (
-    <input
-      type="checkbox"
-      ref={ref}
-      className={className + " cursor-pointer"}
-      {...rest}
-    />
-  );
-};
-const EditableData = () => {
+const Expanding = () => {
   const columns = useMemo<ColumnDef<Person>[]>(
     () => [
       {
@@ -110,17 +30,16 @@ const EditableData = () => {
               <>
                 <IndeterminateCheckbox
                   {...{
-                    checked: table.getIsAllRowsSelected(),
-                    indeterminate: table.getIsSomeRowsSelected(),
-                    onChange: table.getToggleAllRowsSelectedHandler(),
+                    checked: table.getIsAllRowsSelected(), //현재 모든 행이 선택되었는지 여부를 판별, 헤더 부분에 위치한 "전체 선택" 체크박스의 상태를 결정하는 데 사용
+                    indeterminate: table.getIsSomeRowsSelected(), //일부만 선택된 상태여부 판별
+                    onChange: table.getToggleAllRowsSelectedHandler(), //모든 행의 확장 또는 축소 상태를 전환
                   }}
                 />{" "}
                 <button
                   {...{
-                    onClick: table.getToggleAllRowsExpandedHandler(),
+                    onClick: table.getToggleAllRowsExpandedHandler(), //해당 테이블의 모든 행이 확장되어 있는지 여부를 나타내는 속성
                   }}
                 >
-                  {/* 해당 테이블의 모든 행이 확장되어 있는지 여부를 나타내는 속성 */}
                   {table.getIsAllRowsExpanded() ? "👇" : "👉"}
                 </button>{" "}
                 First Name
@@ -204,50 +123,24 @@ const EditableData = () => {
     ],
     []
   );
-  const [data, setData] = React.useState(() => makeData(100, 5, 3));
+  const [data, setData] = useState(() => makeData(100, 5, 3));
 
-  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
-  const [editableCell, setEditableCell] = useState<{
-    rowIndex: number;
-    columnId: string;
-  } | null>(null);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+
   const table = useReactTable({
     data,
     columns,
-    defaultColumn,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    autoResetPageIndex,
-    // updateData 기능을 테이블에 제공
-    meta: {
-      updateData: (rowIndex, columnId, value) => {
-        skipAutoResetPageIndex(); // 다음 리렌더 이후까지 페이지 인덱스 재설정 건너뛰기
-        setData((old) =>
-          old.map((row, index) => {
-            if (index === rowIndex) {
-              // 여기서 테이블의 ID를 얻을 수 있음
-              return {
-                ...old[rowIndex]!,
-                [columnId]: value,
-              };
-            }
-            return row;
-          })
-        );
-      },
+    state: {
+      expanded,
     },
+    onExpandedChange: setExpanded,
+    getSubRows: (row) => row.subRows,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     debugTable: true,
   });
-
-  const handleCellClick = (rowIndex: number, columnId: string) => {
-    setEditableCell({ rowIndex, columnId });
-  };
-
-  const handleCellBlur = () => {
-    setEditableCell(null);
-  };
 
   return (
     <div className="p-2">
@@ -293,7 +186,7 @@ const EditableData = () => {
         </tbody>
       </table>
       <div className="h-2" />
-      {/* 페이지 넘기는 부분 */}
+      {/* 페이지 이동하는 부분 */}
       <div className="flex items-center gap-2">
         <button
           className="border rounded p-1"
@@ -362,4 +255,4 @@ const EditableData = () => {
   );
 };
 
-export default EditableData;
+export default Expanding;
