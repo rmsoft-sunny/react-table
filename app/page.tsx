@@ -25,6 +25,7 @@ export default function Home() {
         <Link href={"/column-groups"}>ColumnGroups</Link>
         <Link href={"/column-ordering"}>ColumnOrdering</Link>
         <Link href={"/column-sizing"}>ColumnSizing</Link>
+        <Link href={"/editable-data"}>EditableData</Link>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+"use client";
 import React, { useReducer, useState } from "react";
 
 import {
@@ -92,29 +93,29 @@ const defaultColumns: ColumnDef<Person>[] = [
   },
 ];
 
-const [data, setData] = useState(() => [...defaultData]);
-const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
-
-const [columnResizeMode, setColumnResizeMode] =
-  useState<ColumnResizeMode>("onChange");
-
-const [columnResizeDirection, setColumnResizeDirection] =
-  useState<ColumnResizeDirection>("ltr");
-
-const rerender = useReducer(() => ({}), {})[1];
-
-const table = useReactTable({
-  data,
-  columns,
-  columnResizeMode,
-  columnResizeDirection,
-  getCoreRowModel: getCoreRowModel(),
-  debugTable: true,
-  debugHeaders: true,
-  debugColumns: true,
-});
-
 const ColumnSizing = () => {
+  const [data, setData] = useState(() => [...defaultData]);
+  const [columns] = useState<typeof defaultColumns>(() => [...defaultColumns]);
+
+  const [columnResizeMode, setColumnResizeMode] =
+    useState<ColumnResizeMode>("onChange");
+
+  const [columnResizeDirection, setColumnResizeDirection] =
+    useState<ColumnResizeDirection>("ltr");
+
+  const rerender = useReducer(() => ({}), {})[1];
+
+  const table = useReactTable({
+    data,
+    columns,
+    columnResizeMode,
+    columnResizeDirection,
+    getCoreRowModel: getCoreRowModel(),
+    debugTable: true,
+    debugHeaders: true,
+    debugColumns: true,
+  });
+
   return (
     <div className="p-2">
       <select
