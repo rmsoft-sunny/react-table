@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import Header from "./header";
 import QueryProviders from "@/lib/provider/query-provider";
+import "./globals.css";
 
 const inter = Noto_Sans({ subsets: ["latin"] });
 

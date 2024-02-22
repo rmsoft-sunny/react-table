@@ -163,11 +163,7 @@ const ShadTable = () => {
       }}
     >
       <TableCaption>shadcn-table</TableCaption>
-      <TableHeader
-        style={{
-          backgroundColor: "tomato",
-        }}
-      >
+      <TableHeader className="bg-blue-100">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
@@ -190,20 +186,16 @@ const ShadTable = () => {
                             )}
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          style={{
-                            backgroundColor: "white",
-                            paddingLeft: "40px",
-                            paddingRight: "40px",
-                          }}
-                        >
+                        <DropdownMenuContent>
                           <DropdownMenuItem
                             onClick={() => header.column.getIsSorted()}
+                            className="cursor-pointer"
                           >
                             🔼
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => header.column.getIsSorted()}
+                            className="cursor-pointer"
                           >
                             🔽
                           </DropdownMenuItem>
@@ -240,14 +232,10 @@ const ShadTable = () => {
         })}
       </TableBody>
 
-      <TableFooter>
-        <TableRow
-          style={{
-            backgroundColor: "tomato",
-          }}
-        >
+      <TableFooter className="w-full bg-blue-100">
+        <TableRow>
           {/* 페이지 이동하는 부분 */}
-          <TableCell colSpan={5}>
+          <TableCell colSpan={5} className="flex gap-1">
             <button
               className="border rounded p-1"
               onClick={() => table.setPageIndex(0)}
