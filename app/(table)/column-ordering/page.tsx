@@ -63,6 +63,7 @@ const defaultColumns: ColumnDef<Person>[] = [
     ],
   },
 ];
+
 const ColumnOrdering = () => {
   const [data, setData] = useState(() => makeData(20));
   const [columns] = useState(() => [...defaultColumns]);

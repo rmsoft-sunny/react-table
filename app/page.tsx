@@ -22,8 +22,9 @@ export default function Home() {
         }}
       >
         <Link href={"/basic"}>Basic</Link>
-        <Link href={"/column-groups"}>Column Groups</Link>
-        <Link href={"/column-ordering"}>Column Ordering</Link>
+        <Link href={"/column-groups"}>ColumnGroups</Link>
+        <Link href={"/column-ordering"}>ColumnOrdering</Link>
+        <Link href={"/column-sizing"}>ColumnSizing</Link>
       </div>
     </div>
   );
