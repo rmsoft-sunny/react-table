@@ -147,13 +147,13 @@ const ShadTable = () => {
     state: {
       expanded,
     },
-    onExpandedChange: setExpanded,
+    onExpandedChange: setExpanded, //행의 확장 상태가 변경될 때마다 트리거
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    debugTable: true,
+    getSortedRowModel: getSortedRowModel(), //정렬된 테이블
+    getPaginationRowModel: getPaginationRowModel(), //페이지네이션된 테이블
+    getFilteredRowModel: getFilteredRowModel(), //필터링된 테이블
+    getExpandedRowModel: getExpandedRowModel(), //확장 상태를 토글
+    debugTable: true, //테이블에 대해 디버그 모드를 활성화할지 여부
   });
 
   return (
