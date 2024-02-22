@@ -45,8 +45,8 @@ const ShadTable = () => {
                   }}
                 />{" "}
                 <button
-                  {...{
-                    onClick: table.getToggleAllRowsExpandedHandler(), //해당 테이블의 모든 행이 확장되어 있는지 여부를 나타내는 속성
+                  onClick={() => {
+                    table.getToggleAllRowsExpandedHandler(); //해당 테이블의 모든 행이 확장되어 있는지 여부를 나타내는 속성
                   }}
                 >
                   {table.getIsAllRowsExpanded() ? "👇" : "👉"}
@@ -72,9 +72,12 @@ const ShadTable = () => {
                   {/* 해당 행이 확장 가능한지 여부를 반환하는 함수,그 하위 행이 존재하는 경우에만 true를 반환 */}
                   {row.getCanExpand() ? (
                     <button
-                      {...{
-                        onClick: row.getToggleExpandedHandler(), //해당 행이 이미 확장되어 있다면 축소하고, 축소되어 있다면 확장
-                        style: { cursor: "pointer" },
+                      style={{
+                        cursor: "pointer",
+                        backgroundColor: "red",
+                      }}
+                      onClick={() => {
+                        row.getToggleExpandedHandler(); //해당 행이 이미 확장되어 있다면 축소하고, 축소되어 있다면 확장
                       }}
                     >
                       {/* 각 행의 확장 여부를 관리하는 데 사용 */}
@@ -108,24 +111,19 @@ const ShadTable = () => {
             footer: (props) => props.column.id,
           },
           {
-            header: "More Info",
-            columns: [
-              {
-                accessorKey: "visits",
-                header: () => <span>Visits</span>,
-                footer: (props) => props.column.id,
-              },
-              {
-                accessorKey: "status",
-                header: "Status",
-                footer: (props) => props.column.id,
-              },
-              {
-                accessorKey: "progress",
-                header: "Profile Progress",
-                footer: (props) => props.column.id,
-              },
-            ],
+            accessorKey: "visits",
+            header: () => <span>Visits</span>,
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "status",
+            header: "Status",
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "progress",
+            header: "Profile Progress",
+            footer: (props) => props.column.id,
           },
         ],
       },
@@ -183,7 +181,7 @@ const ShadTable = () => {
       <TableBody>
         {table.getRowModel().rows.map((row) => {
           return (
-            <TableRow key={row.id}>
+            <TableRow key={row.id} onClick={() => alert(`${row.id}`)}>
               {row.getVisibleCells().map((cell) => {
                 return (
                   <TableCell key={cell.id}>
