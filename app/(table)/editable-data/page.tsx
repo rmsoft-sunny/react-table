@@ -166,6 +166,7 @@ const Expanding = () => {
             </tr>
           ))}
         </thead>
+
         <tbody>
           {table.getRowModel().rows.map((row) => {
             return (
