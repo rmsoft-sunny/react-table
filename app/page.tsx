@@ -24,6 +24,7 @@ export default function Home() {
         <Link href={"/editable-data"}>EditableData</Link>
         <Link href={"/infinite-scrolling"}>InfiniteScrolling</Link>
         <Link href={"/sorting"}>Sorting</Link>
+        <Link href={"/shad-table"}>ShadcnTable</Link>
       </div>
     </div>
   );

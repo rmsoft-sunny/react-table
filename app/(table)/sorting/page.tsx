@@ -92,7 +92,7 @@ const Sorting = () => {
       <div className="h-2" />
       <table
         style={{
-          backgroundColor: "darkgray",
+          backgroundColor: "ghostwhite",
         }}
       >
         <thead>
