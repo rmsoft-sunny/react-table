@@ -21,11 +21,12 @@ export default function Home() {
           gap: "10px",
         }}
       >
-        <Link href={"/basic"}>Basic</Link>
+        {/* <Link href={"/basic"}>Basic</Link>
         <Link href={"/column-groups"}>ColumnGroups</Link>
         <Link href={"/column-ordering"}>ColumnOrdering</Link>
-        <Link href={"/column-sizing"}>ColumnSizing</Link>
+        <Link href={"/column-sizing"}>ColumnSizing</Link> */}
         <Link href={"/editable-data"}>EditableData</Link>
+        <Link href={"/infinite-scrolling"}>InfiniteScrolling</Link>
       </div>
     </div>
   );

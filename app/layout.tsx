@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import Header from "./header";
+import QueryProviders from "@/lib/provider/query-provider";
 
 const inter = Noto_Sans({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        {children}
+        <QueryProviders>{children}</QueryProviders>
       </body>
     </html>
   );

@@ -14,7 +14,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 
-import { makeData, Person } from "./makeData";
+import { makeData, Person } from "./make-data";
 import { IndeterminateCheckbox } from "./IndeterminateCheckbox";
 
 const Expanding = () => {
