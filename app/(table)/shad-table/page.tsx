@@ -203,14 +203,7 @@ const ShadTable = () => {
           }}
         >
           {/* 페이지 이동하는 부분 */}
-          <TableCell
-            colSpan={5}
-            style={{
-              display: "flex",
-              gap: "4px",
-              justifyItems: "center",
-            }}
-          >
+          <TableCell colSpan={5}>
             <button
               className="border rounded p-1"
               onClick={() => table.setPageIndex(0)}
