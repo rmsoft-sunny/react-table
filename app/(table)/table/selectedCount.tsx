@@ -7,7 +7,7 @@ interface PageIndexProps<TData> {
 export function SelectedCount<TData>({ table }: PageIndexProps<TData>) {
   return (
     <>
-      <div className="text-sm text-muted-foreground text-orange-500  font-medium">
+      <div className="text-sm text-muted-foreground text-blue-500 font-medium">
         {table.getFilteredSelectedRowModel().rows.length}개 선택
         {/*         
         of{" "}

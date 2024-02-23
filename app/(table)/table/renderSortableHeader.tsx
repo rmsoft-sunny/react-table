@@ -59,8 +59,6 @@ export const renderSortableHeader = (
           <DropdownMenuItem
             className="flex items-center text-sm"
             onClick={() => {
-              console.log(">>", props);
-
               props.column?.toggleSorting(false);
             }}
           >
