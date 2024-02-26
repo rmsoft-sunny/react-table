@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+"use client";
 import {
   Card,
   CardContent,
@@ -19,9 +19,15 @@ import {
 } from "@/components/ui/select";
 import { randomUUID } from "crypto";
 import { Apple } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const CardPage = () => {
+  const router = useRouter();
+
+  const handleLabelClick = (id: string) => {
+    router.push(`/card/${id}`);
+  };
   return (
     <Card>
       <CardHeader>
@@ -60,6 +66,7 @@ const CardPage = () => {
               <Label
                 key={item.id}
                 htmlFor="apple"
+                onClick={() => handleLabelClick(item?.id)}
                 className="flex items-center justify-center rounded-md border-2 border-muted bg-red-200 bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
               >
                 {item.state}
@@ -78,42 +85,42 @@ export default CardPage;
 
 const cardData = [
   {
-    id: randomUUID(),
+    id: "1",
     state: "편성대기",
     price: "1000000",
   },
   {
-    id: randomUUID(),
+    id: "2",
     state: "작업대기",
     price: "1000000",
   },
   {
-    id: randomUUID(),
+    id: "3",
     state: "작업진행",
     price: "1000000",
   },
   {
-    id: randomUUID(),
+    id: "4",
     state: "검수대기",
     price: "1000000",
   },
   {
-    id: randomUUID(),
+    id: "5",
     state: "검수진행",
     price: "1000000",
   },
   {
-    id: randomUUID(),
+    id: "6",
     state: "검수반려",
     price: "1000000",
   },
   {
-    id: randomUUID(),
+    id: "7",
     state: "재작업",
     price: "1000000",
   },
   {
-    id: randomUUID(),
+    id: "8",
     state: "최종완료",
     price: "10000000",
   },
