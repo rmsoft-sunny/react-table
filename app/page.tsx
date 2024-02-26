@@ -26,6 +26,7 @@ export default function Home() {
         <Link href={"/infinite-scrolling"}>InfiniteScrolling</Link>
         <Link href={"/sorting"}>Sorting</Link>
         <Link href={"/shad-table"}>ShadcnTable</Link>
+        <Link href={"/card"}>Card</Link>
       </div>
     </div>
   );

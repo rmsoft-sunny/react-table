@@ -30,10 +30,7 @@ function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
         <DropdownMenuItem>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <DropdownMenuItem>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
