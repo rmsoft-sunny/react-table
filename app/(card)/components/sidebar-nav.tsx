@@ -1,28 +1,30 @@
-"use client";
-
-import { usePathname } from "next/navigation";
-
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 
 interface SidebarNavItem {
   title: string;
   components: React.ReactNode;
+  url?: string;
 }
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: SidebarNavItem[];
-  onItemClick: (components: React.ReactNode) => void;
+  params: {
+    id: string;
+  };
+  searchParams: {
+    value: string;
+  };
 }
 
 export function SidebarNav({
   className,
   items,
-  onItemClick,
+  params,
+  searchParams,
   ...props
 }: SidebarNavProps) {
-  const titles = [{ title: "기본 정보" }, { title: "지원 정보" }];
-
   return (
     <nav
       className={cn(
@@ -32,19 +34,18 @@ export function SidebarNav({
       {...props}
     >
       {items.map((item, index) => (
-        <button
+        <Link
+          href={`/card/${params.id}?${item.url && `value=${item.url}`}`}
           key={`${index}_sidebar`}
-          onClick={() => onItemClick(item.components)}
           className={cn(
             buttonVariants({ variant: "ghost" }),
-            titles[index]?.title === item.title
-              ? "bg-muted hover:bg-muted"
-              : "hover:bg-transparent hover:underline",
-            "justify-start"
+            `${searchParams.value == item.url ? "bg-red-300" : "bg-blue-300"} 
+            `,
+            "hover:bg-muted justify-start"
           )}
         >
           {item.title}
-        </button>
+        </Link>
       ))}
     </nav>
   );
